@@ -1,17 +1,30 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
+var port string
 var kv = make(map[string]string)
 
 type keyVal struct {
 	Key   string `json:"key" xml:"key" binding:"required"`
 	Value string `json:"value" xml:"value" binding:"required"`
+}
+
+func init() {
+	passedPort := flag.String("port", "8080", "port to be exposed for the application")
+	flag.Parse()
+
+	var sb strings.Builder
+	sb.WriteString(":")
+	sb.WriteString(*passedPort)
+	port = sb.String()
 }
 
 func main() {
@@ -44,5 +57,5 @@ func main() {
 		})
 	})
 
-	server.Run()
+	server.Run(port)
 }
